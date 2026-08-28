@@ -12,6 +12,17 @@ public class User {
     @Column(name="USER_EMAIL", length=50, nullable=false, unique=true)
     private String email;
 
+    @Column(name="USER_NAME", length=50, nullable=false, unique=true)
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Column(nullable = false)
     private String password;
 
