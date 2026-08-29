@@ -49,4 +49,8 @@ public class UserService {
         User user = userOpt.get();
         return passwordEncoder.matches(rawPassword, user.getPassword());
     }
+
+    public Optional<User> getUserByEmail (String email){
+        return userRepository.findByEmail(email);
+    }
 }

@@ -35,3 +35,12 @@ Content-Type: application/json
   "email": "tobias@test.de",
   "password": "falschesPasswort"
 }
+
+### 5. try to access without login
+GET http://localhost:8080/api/forbidden
+Content-Type: application/json
+
+{
+  "email": "tobias@test.de",
+  "password": "falschesPasswort"
+}
