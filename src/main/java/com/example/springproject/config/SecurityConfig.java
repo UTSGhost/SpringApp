@@ -12,9 +12,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // disable since we don't have HTML forms and don't want to get blocked
                 .csrf(csrf -> csrf.disable())
+                // we need this for h2 console in browser to work
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
+                        // any auth request should always be allowed, else users cant register
                         .requestMatchers("/api/auth/**").permitAll()
+                        // for h2 admin dashboard in browser
+                        .requestMatchers("/h2-console/**").permitAll()
+                        // all other requests can only be accessed by authorized users
                         .anyRequest().authenticated()
                 );
         return http.build();
