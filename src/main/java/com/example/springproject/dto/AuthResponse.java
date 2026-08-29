@@ -5,6 +5,7 @@ import com.example.springproject.controller.AuthController;
 public class AuthResponse {
     private boolean success;
     private String message;
+    private String token;
 
     public boolean isSuccess() {
         return success;
@@ -24,8 +25,17 @@ public class AuthResponse {
 
     public AuthResponse(){}
 
-    public AuthResponse(boolean success, String message) {
+    public String getToken() {
+        return token;
+    }
+
+    public AuthResponse(boolean success, String message, String token) {
         this.success = success;
         this.message = message;
+        this.token = token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

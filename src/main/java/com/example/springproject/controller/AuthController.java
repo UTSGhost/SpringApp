@@ -3,6 +3,7 @@ package com.example.springproject.controller;
 import com.example.springproject.dto.AuthResponse;
 import com.example.springproject.dto.LoginRequest;
 import com.example.springproject.entity.User;
+import com.example.springproject.service.JwtService;
 import com.example.springproject.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public AuthController(UserService userService){
+    public AuthController(UserService userService, JwtService jwtService){
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/register")
@@ -24,10 +27,18 @@ public class AuthController {
                 newUser.getPassword()
         );
         if (isSuccess){
-            AuthResponse response = new AuthResponse(true, "User successfully registered");
+            AuthResponse response = new AuthResponse(
+                    true,
+                    "User successfully registered",
+                    jwtService.generateToken(newUser.getEmail()) // user is auto logged in after registration
+            );
             return ResponseEntity.ok(response);
         } else {
-            AuthResponse response = new AuthResponse(false, "This Email is already registered");
+            AuthResponse response = new AuthResponse(
+                    false,
+                    "This Email is already registered",
+                    null
+            );
             return ResponseEntity.status(400).body(response);
         }
 
@@ -40,10 +51,18 @@ public class AuthController {
                 loginRequest.getPassword()
         );
         if (isSuccess){
-            AuthResponse response = new AuthResponse(true, "Successfully logged in");
+            AuthResponse response = new AuthResponse(
+                    true,
+                    "Successfully logged in",
+                    jwtService.generateToken(loginRequest.getEmail())
+            );
             return ResponseEntity.ok(response);
         } else {
-            AuthResponse response = new AuthResponse(false, "Password or Email is incorrect");
+            AuthResponse response = new AuthResponse(
+                    false,
+                    "Password or Email is incorrect",
+                    null
+            );
             return ResponseEntity.status(401).body(response);
         }
     }
