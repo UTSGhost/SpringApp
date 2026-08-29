@@ -1,8 +1,7 @@
 package com.example.springproject.service;
 
-import com.example.springproject.User;
-import com.example.springproject.UserRepository;
-import com.example.springproject.config.PasswordConfig;
+import com.example.springproject.entity.User;
+import com.example.springproject.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
