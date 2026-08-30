@@ -47,14 +47,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUser(@RequestBody LoginRequest loginRequest){
         boolean isSuccess = userService.loginUser(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
+                loginRequest.email(),
+                loginRequest.password()
         );
         if (isSuccess){
             AuthResponse response = new AuthResponse(
                     true,
                     "Successfully logged in",
-                    jwtService.generateToken(loginRequest.getEmail())
+                    jwtService.generateToken(loginRequest.email())
             );
             return ResponseEntity.ok(response);
         } else {

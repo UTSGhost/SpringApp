@@ -10,8 +10,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private PasswordEncoder passwordEncoder;
-    private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.passwordEncoder = passwordEncoder;

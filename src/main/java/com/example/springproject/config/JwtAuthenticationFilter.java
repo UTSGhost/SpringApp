@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // raw jwt String
         String usrJwt = header.substring(7);
         String usrEmail = jwtService.extractEmail(usrJwt);
-        if (usrEmail == null && SecurityContextHolder.getContext().getAuthentication() != null){
+        if (usrEmail == null || SecurityContextHolder.getContext().getAuthentication() != null){
             filterChain.doFilter(request, response);
             return;
         }

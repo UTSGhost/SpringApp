@@ -3,8 +3,8 @@ POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Tobias",
-  "email": "tobias@test.de",
+  "name": "tester",
+  "email": "tester@test.de",
   "password": "strengGeheim123"
 }
 
@@ -37,10 +37,5 @@ Content-Type: application/json
 }
 
 ### 5. try to access without login
-GET http://localhost:8080/api/forbidden
-Content-Type: application/json
-
-{
-  "email": "tobias@test.de",
-  "password": "falschesPasswort"
-}
+GET http://localhost:8080/api/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODA4MzE3NiwiZXhwIjoxNzg4MTY5NTc2fQ.ipDrUPNO7qf-JpgVFsz9taiKOCr7VtDrOUnE0Fg2sM8

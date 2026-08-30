@@ -1,7 +1,7 @@
 package com.example.springproject.entity;
 
 import jakarta.persistence.*;
-
+// each user object equals a row in the USERS  table
 @Entity
 @Table(name="USERS")
 public class User {
