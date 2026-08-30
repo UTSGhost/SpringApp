@@ -26,6 +26,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // any auth request should always be allowed, else users cant register
                         .requestMatchers("/api/auth/**").permitAll()
+                        // area only accessed by admins
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         // for h2 admin dashboard in browser
                         .requestMatchers("/h2-console/**").permitAll()
                         // all other requests can only be accessed by authorized users

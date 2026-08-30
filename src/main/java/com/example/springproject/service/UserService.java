@@ -1,6 +1,8 @@
 package com.example.springproject.service;
 
 import com.example.springproject.entity.User;
+import com.example.springproject.exception.InvalidCredentialsException;
+import com.example.springproject.exception.UserAlreadyExistsException;
 import com.example.springproject.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,30 +26,28 @@ public class UserService {
      * @param email
      * @param rawPassword
      */
-    public boolean registerUser(String name, String email, String rawPassword){
+    public void registerUser(String name, String email, String rawPassword){
         // User already exists
         if (userRepository.findByEmail(email).isPresent()){
-            return false;
+            throw new UserAlreadyExistsException("Email already in use!");
         }
 
         String encodedPassword = passwordEncoder.encode(rawPassword);
+
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-
         user.setPassword(encodedPassword);
+        user.setRole("ROLE_USER");
 
         userRepository.save(user);
-        return true;
     }
 
-    public boolean loginUser(String email, String rawPassword){
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()){
-            return false;
+    public void loginUser(String email, String rawPassword){
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null || !passwordEncoder.matches(rawPassword, user.getPassword())){
+            throw new InvalidCredentialsException("Either password or email incorrect");
         }
-        User user = userOpt.get();
-        return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 
     public Optional<User> getUserByEmail (String email){

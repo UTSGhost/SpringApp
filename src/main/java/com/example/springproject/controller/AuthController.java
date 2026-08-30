@@ -21,49 +21,21 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> registerUser(@RequestBody User newUser){
-        boolean isSuccess = userService.registerUser(
+        userService.registerUser(
                 newUser.getName(),
                 newUser.getEmail(),
                 newUser.getPassword()
         );
-        if (isSuccess){
-            AuthResponse response = new AuthResponse(
-                    true,
-                    "User successfully registered",
-                    jwtService.generateToken(newUser.getEmail()) // user is auto logged in after registration
-            );
-            return ResponseEntity.ok(response);
-        } else {
-            AuthResponse response = new AuthResponse(
-                    false,
-                    "This Email is already registered",
-                    null
-            );
-            return ResponseEntity.status(400).body(response);
-        }
-
+        // generates token so registration also logs in user
+        String token = jwtService.generateToken(newUser.getEmail());
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUser(@RequestBody LoginRequest loginRequest){
-        boolean isSuccess = userService.loginUser(
-                loginRequest.email(),
-                loginRequest.password()
-        );
-        if (isSuccess){
-            AuthResponse response = new AuthResponse(
-                    true,
-                    "Successfully logged in",
-                    jwtService.generateToken(loginRequest.email())
-            );
-            return ResponseEntity.ok(response);
-        } else {
-            AuthResponse response = new AuthResponse(
-                    false,
-                    "Password or Email is incorrect",
-                    null
-            );
-            return ResponseEntity.status(401).body(response);
-        }
+        // will throw exception if error
+        userService.loginUser(loginRequest.email(), loginRequest.password());
+        String token = jwtService.generateToken(loginRequest.email());
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }
