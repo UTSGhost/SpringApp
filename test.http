@@ -1,4 +1,14 @@
-### 1. register new user
+### 1. register user tobias
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "tobias",
+  "email": "tobias@test.de",
+  "password": "strengGeheim123"
+}
+
+### 2. register user tester
 POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
@@ -8,7 +18,7 @@ Content-Type: application/json
   "password": "strengGeheim123"
 }
 
-### 2. login success
+### 3. login success (tobias)
 POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
@@ -17,7 +27,7 @@ Content-Type: application/json
   "password": "strengGeheim123"
 }
 
-### 3. login wrong password (401)
+### 4. login wrong password (401 Unauthorized)
 POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
@@ -26,14 +36,60 @@ Content-Type: application/json
   "password": "falschesPasswort"
 }
 
-### 4. try to login
+### 5. get current user (tobias)
 GET http://localhost:8080/api/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODA4NDU5OCwiZXhwIjoxNzg4MTcwOTk4fQ.bJuPh5rk2LMhpjjU8Hbnl_XveFS6DGa5S_0BHmQzFDo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODM4NTQxMywiZXhwIjoxNzg4NDcxODEzfQ.-BoBf2Mw9920DXqYJvZSwqWuNwc0hg7NCfZucw-Lj80
 
-### 5. admin page
-GET http://localhost:8080/api/admin/
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODA4NDU5OCwiZXhwIjoxNzg4MTcwOTk4fQ.bJuPh5rk2LMhpjjU8Hbnl_XveFS6DGa5S_0BHmQzFDo
 
-### 6. get all notes
-GET http://localhost:8080/api/notes/
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODA4NDU5OCwiZXhwIjoxNzg4MTcwOTk4fQ.bJuPh5rk2LMhpjjU8Hbnl_XveFS6DGa5S_0BHmQzFDo
+### 6. admin page (403 Forbidden - unless tobias hat ROLE_ADMIN)
+GET http://localhost:8080/api/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODM4NTQxMywiZXhwIjoxNzg4NDcxODEzfQ.-BoBf2Mw9920DXqYJvZSwqWuNwc0hg7NCfZucw-Lj80
+
+
+### 7. create note for tobias
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODM4NTQxMywiZXhwIjoxNzg4NDcxODEzfQ.-BoBf2Mw9920DXqYJvZSwqWuNwc0hg7NCfZucw-Lj80
+
+
+{
+  "data": "private note from tobias!"
+}
+
+### 8. create note for tester
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXJAdGVzdC5kZSIsImlhdCI6MTc4ODM4NDQwOCwiZXhwIjoxNzg4NDcwODA4fQ.JfsN5fH2skKXJUXldKc7uQHUgq3s6ZlVu3Mb8iE-fBY
+
+{
+  "data": "testing note"
+}
+
+### 9. get all notes for tobias
+GET http://localhost:8080/api/notes
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODM4NTQxMywiZXhwIjoxNzg4NDcxODEzfQ.-BoBf2Mw9920DXqYJvZSwqWuNwc0hg7NCfZucw-Lj80
+
+
+### 10. get all notes for tester
+GET http://localhost:8080/api/notes
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXJAdGVzdC5kZSIsImlhdCI6MTc4ODM4NDQwOCwiZXhwIjoxNzg4NDcwODA4fQ.JfsN5fH2skKXJUXldKc7uQHUgq3s6ZlVu3Mb8iE-fBY
+
+### 11. get all notes WITHOUT token (401 Unauthorized)
+GET http://localhost:8080/api/notes
+
+### 12. IDOR TEST: tester tries to delete tobias' note (404 Not Found)
+DELETE http://localhost:8080/api/notes/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXJAdGVzdC5kZSIsImlhdCI6MTc4ODM4NDQwOCwiZXhwIjoxNzg4NDcwODA4fQ.JfsN5fH2skKXJUXldKc7uQHUgq3s6ZlVu3Mb8iE-fBY
+
+### 13. delete note of tobias (204 No Content)
+DELETE http://localhost:8080/api/notes/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODM4NTQxMywiZXhwIjoxNzg4NDcxODEzfQ.-BoBf2Mw9920DXqYJvZSwqWuNwc0hg7NCfZucw-Lj80
+
+### 14. Update note (200 OK)
+PUT http://localhost:8080/api/notes/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b2JpYXNAdGVzdC5kZSIsImlhdCI6MTc4ODM4NTQxMywiZXhwIjoxNzg4NDcxODEzfQ.-BoBf2Mw9920DXqYJvZSwqWuNwc0hg7NCfZucw-Lj80
+
+{
+  "data": "note updated!"
+}
