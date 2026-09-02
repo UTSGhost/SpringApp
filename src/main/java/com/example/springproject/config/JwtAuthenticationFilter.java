@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // jwt is in Header
         String header = request.getHeader("Authorization");
         if(header == null || !header.startsWith("Bearer ")){
-            // not lo
+            // always needed, filterChain should continue as usual
             filterChain.doFilter(request, response);
             return;
         }
@@ -72,6 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 user,
                 null,
                 authorities);
+        // if valid, update SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
